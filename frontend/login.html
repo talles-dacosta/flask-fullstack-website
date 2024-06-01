@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='core.css') }}">
+        <title>Wanderlist</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="/">Return to the main page</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <article class="login-box">
+                <section>
+                    <h1>Login</h1>
+                    <form action="/login-form" method="post">
+                        <input type="email" id="email" name="email" placeholder="Your account e-mail" required>
+                        <input type="password" id="password" name="password" placeholder="Your account password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                    <p>Are you not registered yet? <a href="/register">Register here</a></p>
+                </section>
+            </article>
+        </main>
+    </body>
+</html>
