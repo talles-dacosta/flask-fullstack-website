@@ -20,7 +20,7 @@
             <article class="login-box">
                 <section>
                     <h1>Login</h1>
-                    <form action="/login-form" method="post">
+                    <form action="#" method="post">
                         <input type="email" id="email" name="email" placeholder="Your account e-mail" required>
                         <input type="password" id="password" name="password" placeholder="Your account password" required>
                         <button type="submit">Login</button>
@@ -30,4 +30,15 @@
             </article>
         </main>
     </body>
+    <script defer type="text/javascript">
+
+        var auth = {{ auth | tojson }}
+
+        window.onload = function() {
+                if ( auth == "false") {
+                alert("Please login into your account before proceeding.")
+            }
+        };
+        
+    </script>
 </html>

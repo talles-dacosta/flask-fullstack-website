@@ -3,69 +3,140 @@ import os
 import psycopg2
 
 load_dotenv()
-hostEnv = os.getenv("host")
-dbnameEnv = os.getenv("dbname")
-userEnv = os.getenv("user")
-passwordEnv = os.getenv("password")
 
-def getDatabaseConnection():
-    connection = psycopg2.connect(host=hostEnv, dbname=dbnameEnv, user=userEnv, password=passwordEnv)
+def connect_database():
+
+    try:
+        connection = psycopg2.connect(host=os.getenv("host"), 
+                                      dbname=os.getenv("dbname"), 
+                                      user=os.getenv("user"), 
+                                      password=os.getenv("password"),
+                                      port=os.getenv("port"))
+
+    except Exception as err:
+        print(err)
+
     return connection
 
-def createTablesUsers():
+def create_table_users():
     """Create the table users if it does not already exists."""
-    connection = getDatabaseConnection()
-    cursor = connection.cursor()
-    cursor.execute("""
+
+    con = connect_database()
+    cur = con.cursor()
+
+    try:
+        cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
             id serial PRIMARY KEY,
             username text,
             password Varchar(255),
-            email Varchar(255)
+            email Varchar(255),
+            image-path Varchar(255)
                 );
                    """)
-    connection.commit()
-    connection.close()
+        con.commit()
+    except Exception as err:
+        print(err)
 
-def insertTableUsers(username, hashPassword, email):
-    """Insert username, hash of the password and email on the table users."""
-    connection = getDatabaseConnection()
-    cursor = connection.cursor()
-    cursor.execute("""INSERT INTO users (username, password, email) VALUES (%s, %s, %s);""", 
-    (username, hashPassword, email))
-    connection.commit()
-    connection.close()
+    con.close()
+    cur.close()
 
-def getPasswordDatabase(email):
-    """Retrieves the password from the database based on the e-mail informed.\n\n Requires the user e-mail (string) and returns the password (string)."""
+def insert_user(username, hash_password, email):
+    """Insert new user row (id, username, password hash, email) in the table users."""
 
-    connection = getDatabaseConnection()
-    cursor = connection.cursor()
+    con = connect_database()
+    cur = con.cursor()
 
-    cursor.execute("""SELECT password FROM users WHERE email = (%s);""", 
-    (email,))
+    try:
+        cur.execute("""INSERT INTO users (username, password, email) VALUES (%s, %s, %s);""", 
+    (username, hash_password, email))
+        con.commit()
+    except Exception as err:
+        print(err)
 
-    password = cursor.fetchone()
+    con.close()
+    cur.close()
 
-    connection.commit()
-    connection.close()
+def select_password(email):
+    """Selects the user's password from the database using their email as the parameter."""
 
-    return str(password[0])
+    con = connect_database()
+    cur = con.cursor()
+
+    try:
+        cur.execute("""SELECT password FROM users WHERE email = (%s);""", (email,))
+        password = cur.fetchone()
+    except Exception as err:
+        print(err)
+
+    con.close()
+    cur.close()
+
+    return password[0]
+
+def select_username(email):
+    """Selects the user's username from the database using their email as the parameter."""
+
+    con = connect_database()
+    cur = con.cursor()
+
+    try:
+        cur.execute("""SELECT username FROM users WHERE email = %s;""", (email,))
+        username = cur.fetchone()
+
+    except Exception as err:
+        print(err)
+
+    con.close()
+    cur.close()
+
+    return username[0]
+
+def select_data(email):
+    """Selects the user's id, username, email and password hash from the database using their email as the parameter."""
+
+    con = connect_database()
+    cur = con.cursor()
+
+    try:
+        cur.execute(
+        """SELECT id, username, email, password FROM users WHERE email=(%s);""", (email,))
+        data = cur.fetchone()
+    except Exception as err:
+        print(err)
 
 
-def getUsernameDatabase(email):
+    con.close()
+    cur.close()
 
-    """Retrieves the password from the database based on the e-mail informed.\n\n Requires the user e-mail (string) and returns the password (string)."""
+    return data[0], data[1], data[2], data[3]
 
-    connection = getDatabaseConnection()
-    cursor = connection.cursor()
+def update_username(id, username):
+    """Updates the user's username in the database."""
 
-    cursor.execute("""SELECT username FROM users WHERE email = (%s);""", 
-    (email,))
+    con = connect_database()
+    cur = con.cursor()
 
-    username = cursor.fetchone()
+    try:
+        cur.execute("""UPDATE users SET username = %s WHERE id = %s;""", (username, id))
+        con.commit()
+    except Exception as err:
+        print(err)
 
-    connection.commit()
-    connection.close()
+    con.close()
+    cur.close()
 
-    return str(username[0])
+def update_password(id, password):
+    """Updates the user's password hash inside the database."""
+
+    con = connect_database()
+    cur = con.cursor()
+
+    try:
+        cur.execute("""UPDATE users SET password = %s WHERE id = %s;""", (password, id))
+        con.commit()
+    except Exception as err:
+        print(err)
+
+    con.close()
+    cur.close()

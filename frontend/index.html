@@ -26,6 +26,7 @@
                         <ul>
                             {% if current_user.is_authenticated %}
                             <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                            <li><a href="{{ url_for('account') }}">Account</a></li>
                             {% else %}
                             <li><a href="{{ url_for('login') }}">Login</a></li>
                             {% endif %}
@@ -38,7 +39,7 @@
 
             <section class="hero-container">
                 <h2>RoamersHub</h2>
-                <img src="img/hero-banner.jpg" alt="">
+                <img src="{{ url_for('static', filename="/img/hero-banner.jpg")}}" alt="">
                 <p>The ideal place to find your next trip's destination. &lpar;:</p>
             </section>
 
