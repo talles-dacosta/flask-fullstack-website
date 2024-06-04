@@ -1,1 +1,4 @@
 .env
+ca.crt
+ca
+.crt

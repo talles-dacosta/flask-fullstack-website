@@ -6,6 +6,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="{{ url_for('static', filename='core.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
         <title>Wanderlist</title>
     </head>
     <body>
@@ -16,14 +17,14 @@
                 </ul>
             </nav>
         </header>
-        <main>
+        <main class="flex justify-content-center align-items-center">
             <article class="login-box">
-                <section>
+                <section class="flex collumn gap-20px">
                     <h1>Login</h1>
-                    <form action="#" method="post">
+                    <form class="flex collumn gap-20px align-items-center" action="#" method="post">
                         <input type="email" id="email" name="email" placeholder="Your account e-mail" required>
                         <input type="password" id="password" name="password" placeholder="Your account password" required>
-                        <button type="submit">Login</button>
+                        <input type="submit" value="Login">
                     </form>
                     <p>Are you not registered yet? <a href="/register">Register here</a></p>
                 </section>
